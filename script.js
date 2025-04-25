@@ -4,6 +4,11 @@ function loadStaffData() {
   let staffData = JSON.parse(localStorage.getItem('staff')) || [];
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
+if (staffData.some(member => member.name.toLowerCase() === newStaff.name.toLowerCase())) {
+    alert("Ce membre existe déjà !");
+    return;
+}
+
   if (sortDescending) {
     staffData.sort((a, b) => b.tickets - a.tickets);
   } else {
