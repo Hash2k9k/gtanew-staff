@@ -1,122 +1,136 @@
-const adminCode = "gta123"; // <-- change ce mot de passe ici
+// Chargement initial
+document.addEventListener('DOMContentLoaded', () => {
+  loadStaffData();
+});
 
-// Vérifie s'il est déjà connecté
-if (sessionStorage.getItem("authenticated") === "true") {
-  document.getElementById("main-content").style.display = "block";
-} else {
-  document.getElementById("login-screen").style.display = "block";
-}
-
-// Fonction de connexion
-function verifyPassword() {
-  const input = document.getElementById("login-password").value;
-  if (input === adminCode) {
-    sessionStorage.setItem("authenticated", "true");
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("main-content").style.display = "block";
-    loadStaffData();
-  } else {
-    document.getElementById("login-error").textContent = "Mot de passe incorrect.";
-  }
-}
-
+// Fonction pour charger les données du staff depuis le localStorage
 function loadStaffData() {
-  const data = JSON.parse(localStorage.getItem("staff")) || [];
-  const tbody = document.getElementById("staff-list");
-  tbody.innerHTML = "";
-  const total = data.reduce((sum, s) => sum + s.tickets, 0);
-  data.forEach((staff, i) => {
-    const tr = document.createElement("tr");
-    const progress = total > 0 ? (staff.tickets / total) * 100 : 0;
-    tr.innerHTML = `
+  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
+  const staffList = document.getElementById('staff-list');
+  staffList.innerHTML = '';
+
+  staffData.forEach((staff, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
       <td>${staff.name}</td>
-      <td>
-        <input type="number" value="${staff.tickets}" data-index="${i}" class="tickets-input" />
-        <div class="progress-bar"><div class="progress" style="width:${progress}%"></div></div>
-      </td>
-      <td><button onclick="deleteStaff(${i})">Supprimer</button></td>
+      <td><input type="number" value="${staff.tickets}" class="tickets-input" data-index="${index}" /></td>
+      <td><button class="delete-btn" data-index="${index}">Supprimer</button></td>
     `;
-    tbody.appendChild(tr);
+    staffList.appendChild(row);
   });
 
-  document.querySelectorAll(".tickets-input").forEach(input => {
-    input.addEventListener("input", e => updateTickets(e.target));
+  // Lier les événements
+  document.querySelectorAll('.tickets-input').forEach(input => {
+    input.addEventListener('input', (e) => updateTickets(e.target));
   });
 
-  updateStats(data);
-  loadLogs();
+  document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', (e) => deleteStaff(e.target));
+  });
+
+  updateStats();
 }
 
+// Mettre à jour le nombre de tickets
 function updateTickets(input) {
-  if (!isAuthorized()) return;
-  const index = input.dataset.index;
-  const staff = JSON.parse(localStorage.getItem("staff")) || [];
-  staff[index].tickets = parseInt(input.value, 10);
-  localStorage.setItem("staff", JSON.stringify(staff));
-  logAction(`Mise à jour des tickets pour ${staff[index].name}`);
+  const index = input.getAttribute('data-index');
+  const newValue = parseInt(input.value, 10);
+  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
+  const oldValue = staffData[index].tickets;
+
+  staffData[index].tickets = newValue;
+  localStorage.setItem('staff', JSON.stringify(staffData));
+  addLog(`${staffData[index].name} modifié : ${oldValue} → ${newValue} tickets`);
+  updateStats();
+}
+
+// Supprimer un membre du staff
+function deleteStaff(button) {
+  const index = button.getAttribute('data-index');
+  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
+  const name = staffData[index].name;
+
+  staffData.splice(index, 1);
+  localStorage.setItem('staff', JSON.stringify(staffData));
+  addLog(`${name} supprimé du staff`);
   loadStaffData();
 }
 
-function deleteStaff(index) {
-  if (!isAuthorized()) return;
-  const staff = JSON.parse(localStorage.getItem("staff")) || [];
-  logAction(`Suppression de ${staff[index].name}`);
-  staff.splice(index, 1);
-  localStorage.setItem("staff", JSON.stringify(staff));
+// Ajouter un nouveau membre
+document.getElementById('add-staff-form').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const nameInput = document.getElementById('staff-name');
+  const ticketsInput = document.getElementById('staff-tickets');
+
+  const newStaff = {
+    name: nameInput.value.trim(),
+    tickets: parseInt(ticketsInput.value, 10)
+  };
+
+  if (newStaff.name === '' || isNaN(newStaff.tickets)) return;
+
+  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
+  staffData.push(newStaff);
+  localStorage.setItem('staff', JSON.stringify(staffData));
+
+  addLog(`${newStaff.name} ajouté avec ${newStaff.tickets} tickets`);
+  nameInput.value = '';
+  ticketsInput.value = '0';
   loadStaffData();
-}
+});
 
-function addStaff(e) {
-  e.preventDefault();
-  if (!isAuthorized()) return;
-  const name = document.getElementById("staff-name").value;
-  const tickets = parseInt(document.getElementById("staff-tickets").value, 10);
-  const data = JSON.parse(localStorage.getItem("staff")) || [];
-  data.push({ name, tickets });
-  localStorage.setItem("staff", JSON.stringify(data));
-  logAction(`Ajout de ${name} avec ${tickets} tickets`);
-  e.target.reset();
-  loadStaffData();
-}
+// Rechercher un membre
+document.getElementById('search').addEventListener('input', function(e) {
+  const query = e.target.value.toLowerCase();
+  const rows = document.querySelectorAll('#staff-list tr');
 
-function updateStats(data) {
-  const total = data.reduce((sum, s) => sum + s.tickets, 0);
-  const moyenne = total / (data.length || 1);
-  const best = data.reduce((a, b) => (b.tickets > a.tickets ? b : a), { name: '', tickets: 0 });
-  document.getElementById("stats").innerHTML = `
-    <h3>Statistiques</h3>
-    <p>Total tickets traités : <strong>${total}</strong></p>
-    <p>Moyenne par membre : <strong>${moyenne.toFixed(2)}</strong></p>
-    <p>Top performer : <strong>${best.name} (${best.tickets} tickets)</strong></p>
-  `;
-}
-
-function logAction(msg) {
-  const logs = JSON.parse(localStorage.getItem("logs")) || [];
-  logs.unshift(`[${new Date().toLocaleString()}] ${msg}`);
-  localStorage.setItem("logs", JSON.stringify(logs));
-  loadLogs();
-}
-
-function loadLogs() {
-  const logList = document.getElementById("log-list");
-  const logs = JSON.parse(localStorage.getItem("logs")) || [];
-  logList.innerHTML = logs.slice(0, 10).map(log => `<li>${log}</li>`).join("");
-}
-
-function sortStaff() {
-  const staff = JSON.parse(localStorage.getItem("staff")) || [];
-  staff.sort((a, b) => b.tickets - a.tickets);
-  localStorage.setItem("staff", JSON.stringify(staff));
-  loadStaffData();
-}
-
-document.getElementById("add-staff-form").addEventListener("submit", addStaff);
-document.getElementById("search").addEventListener("input", function () {
-  const value = this.value.toLowerCase();
-  document.querySelectorAll("#staff-list tr").forEach(row => {
-    row.style.display = row.children[0].textContent.toLowerCase().includes(value) ? "" : "none";
+  rows.forEach(row => {
+    const name = row.querySelector('td').textContent.toLowerCase();
+    row.style.display = name.includes(query) ? '' : 'none';
   });
 });
 
-loadStaffData();
+// Trier par nombre de tickets
+function sortStaff() {
+  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
+  staffData.sort((a, b) => b.tickets - a.tickets);
+  localStorage.setItem('staff', JSON.stringify(staffData));
+  loadStaffData();
+}
+
+// Logs
+function addLog(message) {
+  const logs = JSON.parse(localStorage.getItem('logs')) || [];
+  const time = new Date().toLocaleString();
+  logs.unshift(`[${time}] ${message}`);
+  localStorage.setItem('logs', JSON.stringify(logs));
+  updateLogs();
+}
+
+// Afficher l'historique
+function updateLogs() {
+  const logs = JSON.parse(localStorage.getItem('logs')) || [];
+  const logList = document.getElementById('log-list');
+  logList.innerHTML = '';
+  logs.slice(0, 20).forEach(log => {
+    const li = document.createElement('li');
+    li.textContent = log;
+    logList.appendChild(li);
+  });
+}
+
+// Statistiques
+function updateStats() {
+  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
+  const total = staffData.reduce((sum, s) => sum + s.tickets, 0);
+  const top = staffData.reduce((prev, curr) => curr.tickets > prev.tickets ? curr : prev, { name: '-', tickets: 0 });
+
+  document.getElementById('stats').innerHTML = `
+    <h3>Statistiques</h3>
+    <p>Total de tickets traités : <strong>${total}</strong></p>
+    <p>Top performer : <strong>${top.name}</strong> (${top.tickets} tickets)</p>
+  `;
+
+  updateLogs();
+}
