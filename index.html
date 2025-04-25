@@ -1,103 +1,78 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestion Staff GTA - Accès sécurisé</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff GTA - Gestion Avancée</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    #main-content { display: none; }
-    #login-screen {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 300px;
-      margin: 100px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #login-screen input, #login-screen button {
-      padding: 10px;
-      font-size: 16px;
-    }
-    #login-error {
-      color: red;
-      text-align: center;
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Login -->
-  <div id="login-screen">
-    <h2>Connexion à l'espace staff</h2>
-    <input type="password" id="login-password" placeholder="Mot de passe">
-    <button onclick="verifyPassword()">Se connecter</button>
-    <p id="login-error"></p>
-  </div>
-
-  <!-- Contenu principal (masqué par défaut) -->
-  <div id="main-content">
+  <div id="auth-screen">
     <div class="container">
-      <h1>Gestion du Staff GtaNew</h1>
-
-      <div class="controls">
-        <input type="text" id="search" placeholder="Rechercher un membre...">
-        <button onclick="sortStaff()">Trier par tickets</button>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Tickets traités</th>
-            <th>Modifier</th>
-          </tr>
-        </thead>
-        <tbody id="staff-list"></tbody>
-      </table>
-
-      <form id="add-staff-form">
-        <h2>Ajouter un membre</h2>
-        <input type="text" id="staff-name" placeholder="Nom du membre" required />
-        <input type="number" id="staff-tickets" placeholder="Tickets traités" value="0" required />
-        <button type="submit">Ajouter</button>
-      </form>
-
-      <div id="stats"></div>
-      <div id="logs">
-        <h3>Historique</h3>
-        <ul id="log-list"></ul>
-      </div>
+      <h1>🔒 Authentification</h1>
+      <input type="password" id="password-input" placeholder="Mot de passe" />
+      <button onclick="checkPassword()">Valider</button>
     </div>
   </div>
 
-  <script>
-    function verifyPassword() {
-      const input = document.getElementById("login-password").value;
-      const error = document.getElementById("login-error");
+  <div id="main-content" style="display:none">
+    <div class="container">
+      <header>
+        <h1>Gestion du Staff GtaNew</h1>
+        <button onclick="logout()">Se déconnecter</button>
+      </header>
 
-      if (input === "gta123") {
-        sessionStorage.setItem("authenticated", "true");
-        showMainContent();
-      } else {
-        error.textContent = "Mot de passe incorrect.";
-      }
-    }
+      <section>
+        <div class="controls">
+          <button onclick="sortByTickets()">Trier par tickets</button>
+          <select id="time-filter" onchange="filterByDateRange()">
+            <option value="all">Tous</option>
+            <option value="7">7 derniers jours</option>
+            <option value="30">30 derniers jours</option>
+          </select>
+        </div>
 
-    function showMainContent() {
-      document.getElementById("login-screen").style.display = "none";
-      document.getElementById("main-content").style.display = "block";
-      const script = document.createElement('script');
-      script.src = 'script.js';
-      document.body.appendChild(script);
-    }
+        <table id="staff-table">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Rôle</th>
+              <th>Tickets</th>
+              <th>Ajout</th>
+              <th>Supprimer</th>
+            </tr>
+          </thead>
+          <tbody id="staff-list"></tbody>
+        </table>
+      </section>
 
-    // Si déjà connecté, affiche directement le contenu
-    if (sessionStorage.getItem("authenticated") === "true") {
-      window.addEventListener("DOMContentLoaded", showMainContent);
-    }
-  </script>
+      <section>
+        <h2>Ajouter un membre</h2>
+        <form id="add-staff-form">
+          <input type="text" id="staff-name" placeholder="Nom du membre" required />
+          <select id="staff-role" required>
+            <option value="Admin">Admin</option>
+            <option value="Modérateur">Modérateur</option>
+            <option value="Support">Support</option>
+          </select>
+          <input type="number" id="staff-tickets" placeholder="Tickets traités" value="0" required />
+          <button type="submit">Ajouter</button>
+        </form>
+      </section>
+
+      <section id="stats">
+        <h2>Statistiques</h2>
+        <canvas id="statsChart" height="200"></canvas>
+      </section>
+
+      <section id="logs">
+        <h2>Historique des activités</h2>
+        <ul id="log-list"></ul>
+      </section>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
