@@ -1,119 +1,106 @@
-let sortDescending = true;
+const adminCode = "gta123";
+
+function isAuthorized() {
+  return prompt("Mot de passe administrateur ?") === adminCode;
+}
 
 function loadStaffData() {
-  let staffData = JSON.parse(localStorage.getItem('staff')) || [];
-  const searchTerm = document.getElementById('search-input').value.toLowerCase();
-
-if (staffData.some(member => member.name.toLowerCase() === newStaff.name.toLowerCase())) {
-    alert("Ce membre existe déjà !");
-    return;
-}
-
-function deleteStaff(button) {
-    const index = button.getAttribute('data-index');
-    const staffData = JSON.parse(localStorage.getItem('staff')) || [];
-
-    if (confirm(`Supprimer ${staffData[index].name} ?`)) {
-        staffData.splice(index, 1);
-        localStorage.setItem('staff', JSON.stringify(staffData));
-        loadStaffData();
-    }
-}
-
-  if (sortDescending) {
-    staffData.sort((a, b) => b.tickets - a.tickets);
-  } else {
-    staffData.sort((a, b) => a.tickets - b.tickets);
-  }
-
-  const staffList = document.getElementById('staff-list');
-  staffList.innerHTML = '';
-
-  const filtered = staffData.filter(member => member.name.toLowerCase().includes(searchTerm));
-
-  const maxTickets = Math.max(...staffData.map(s => s.tickets), 1);
-
-  let totalTickets = 0;
-
-  filtered.forEach((staff, index) => {
-    totalTickets += staff.tickets;
-
-    const row = document.createElement('tr');
-    row.innerHTML = `
+  const data = JSON.parse(localStorage.getItem("staff")) || [];
+  const tbody = document.getElementById("staff-list");
+  tbody.innerHTML = "";
+  const total = data.reduce((sum, s) => sum + s.tickets, 0);
+  data.forEach((staff, i) => {
+    const tr = document.createElement("tr");
+    const progress = total > 0 ? (staff.tickets / total) * 100 : 0;
+    tr.innerHTML = `
       <td>${staff.name}</td>
-      <td><input type="number" value="${staff.tickets}" class="tickets-input" data-index="${index}" /></td>
       <td>
-        <div class="progress-bar">
-          <div class="progress" style="width: ${Math.round((staff.tickets / maxTickets) * 100)}%"></div>
-        </div>
+        <input type="number" value="${staff.tickets}" data-index="${i}" class="tickets-input" />
+        <div class="progress-bar"><div class="progress" style="width:${progress}%"></div></div>
       </td>
-      <td><button class="delete-btn" data-index="${index}">Supprimer</button></td>
+      <td><button onclick="deleteStaff(${i})">Supprimer</button></td>
     `;
-    staffList.appendChild(row);
+    tbody.appendChild(tr);
   });
 
-  document.getElementById('total-tickets').textContent = `Total des tickets : ${totalTickets}`;
-
-  document.querySelectorAll('.tickets-input').forEach(input => {
-    input.addEventListener('input', (e) => updateTickets(e.target));
+  document.querySelectorAll(".tickets-input").forEach(input => {
+    input.addEventListener("input", e => updateTickets(e.target));
   });
 
-  document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', (e) => deleteStaff(e.target));
-  });
+  updateStats(data);
+  loadLogs();
 }
 
 function updateTickets(input) {
-  const index = input.getAttribute('data-index');
-  const value = parseInt(input.value, 10);
-  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
-
-  if (!isNaN(value)) {
-    staffData[index].tickets = value;
-    localStorage.setItem('staff', JSON.stringify(staffData));
-    loadStaffData();
-  }
-}
-
-function deleteStaff(button) {
-  const index = button.getAttribute('data-index');
-  const staffData = JSON.parse(localStorage.getItem('staff')) || [];
-
-  if (confirm(`Supprimer ${staffData[index].name} ?`)) {
-    staffData.splice(index, 1);
-    localStorage.setItem('staff', JSON.stringify(staffData));
-    loadStaffData();
-  }
-}
-
-function addStaff(event) {
-  event.preventDefault();
-  const nameInput = document.getElementById('staff-name');
-  const ticketsInput = document.getElementById('staff-tickets');
-  const name = nameInput.value.trim();
-  const tickets = parseInt(ticketsInput.value, 10);
-
-  if (!name) return alert("Nom requis.");
-
-  let staffData = JSON.parse(localStorage.getItem('staff')) || [];
-
-  if (staffData.some(s => s.name.toLowerCase() === name.toLowerCase())) {
-    return alert("Ce membre existe déjà !");
-  }
-
-  staffData.push({ name, tickets });
-  localStorage.setItem('staff', JSON.stringify(staffData));
-
-  nameInput.value = '';
-  ticketsInput.value = '0';
+  if (!isAuthorized()) return;
+  const index = input.dataset.index;
+  const staff = JSON.parse(localStorage.getItem("staff")) || [];
+  staff[index].tickets = parseInt(input.value, 10);
+  localStorage.setItem("staff", JSON.stringify(staff));
+  logAction(`Mise à jour des tickets pour ${staff[index].name}`);
   loadStaffData();
 }
 
-document.getElementById('add-staff-form').addEventListener('submit', addStaff);
-document.getElementById('search-input').addEventListener('input', loadStaffData);
-document.getElementById('sort-btn').addEventListener('click', () => {
-  sortDescending = !sortDescending;
+function deleteStaff(index) {
+  if (!isAuthorized()) return;
+  const staff = JSON.parse(localStorage.getItem("staff")) || [];
+  logAction(`Suppression de ${staff[index].name}`);
+  staff.splice(index, 1);
+  localStorage.setItem("staff", JSON.stringify(staff));
   loadStaffData();
+}
+
+function addStaff(e) {
+  e.preventDefault();
+  if (!isAuthorized()) return;
+  const name = document.getElementById("staff-name").value;
+  const tickets = parseInt(document.getElementById("staff-tickets").value, 10);
+  const data = JSON.parse(localStorage.getItem("staff")) || [];
+  data.push({ name, tickets });
+  localStorage.setItem("staff", JSON.stringify(data));
+  logAction(`Ajout de ${name} avec ${tickets} tickets`);
+  e.target.reset();
+  loadStaffData();
+}
+
+function updateStats(data) {
+  const total = data.reduce((sum, s) => sum + s.tickets, 0);
+  const moyenne = total / (data.length || 1);
+  const best = data.reduce((a, b) => (b.tickets > a.tickets ? b : a), { name: '', tickets: 0 });
+  document.getElementById("stats").innerHTML = `
+    <h3>Statistiques</h3>
+    <p>Total tickets traités : <strong>${total}</strong></p>
+    <p>Moyenne par membre : <strong>${moyenne.toFixed(2)}</strong></p>
+    <p>Top performer : <strong>${best.name} (${best.tickets} tickets)</strong></p>
+  `;
+}
+
+function logAction(msg) {
+  const logs = JSON.parse(localStorage.getItem("logs")) || [];
+  logs.unshift(`[${new Date().toLocaleString()}] ${msg}`);
+  localStorage.setItem("logs", JSON.stringify(logs));
+  loadLogs();
+}
+
+function loadLogs() {
+  const logList = document.getElementById("log-list");
+  const logs = JSON.parse(localStorage.getItem("logs")) || [];
+  logList.innerHTML = logs.slice(0, 10).map(log => `<li>${log}</li>`).join("");
+}
+
+function sortStaff() {
+  const staff = JSON.parse(localStorage.getItem("staff")) || [];
+  staff.sort((a, b) => b.tickets - a.tickets);
+  localStorage.setItem("staff", JSON.stringify(staff));
+  loadStaffData();
+}
+
+document.getElementById("add-staff-form").addEventListener("submit", addStaff);
+document.getElementById("search").addEventListener("input", function () {
+  const value = this.value.toLowerCase();
+  document.querySelectorAll("#staff-list tr").forEach(row => {
+    row.style.display = row.children[0].textContent.toLowerCase().includes(value) ? "" : "none";
+  });
 });
 
 loadStaffData();
