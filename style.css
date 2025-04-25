@@ -1,203 +1,90 @@
-/* style.css */
-
-:root {
-  --bg-light: linear-gradient(120deg, #f9e79f, #f7dc6f);
-  --bg-dark: #1a1a1a;
-  --text-light: #333;
-  --text-dark: #f9f9f9;
-  --primary-yellow: #f4d03f;
-  --hover-yellow: #f7dc6f;
-}
-
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 0;
-  background: var(--bg-light);
-  color: var(--text-light);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  transition: all 0.3s ease;
-}
-
-body.dark-mode {
-  background: var(--bg-dark);
-  color: var(--text-dark);
+  font-family: 'Segoe UI', sans-serif;
+  background: url('https://images.unsplash.com/photo-1606788075761-6e4d92b21862?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
 }
 
 .container {
-  width: 90%;
-  max-width: 1000px;
-  margin-top: 50px;
-  background: white;
+  max-width: 900px;
+  margin: 40px auto;
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.5s ease-in;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
 }
 
-body.dark-mode .container {
-  background: #2c2c2c;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-h1, h2 {
+h1, h2, h3 {
   text-align: center;
+  color: #ffe066;
 }
 
-#staff-table {
+table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
-  margin-bottom: 30px;
 }
 
-#staff-table th, #staff-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
+table th, table td {
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   text-align: center;
 }
 
-#staff-table th {
-  background-color: var(--primary-yellow);
+table th {
+  background-color: #ffd43b;
+  color: #333;
 }
 
-input[type="text"],
-input[type="number"],
-select {
-  padding: 8px;
+input[type="text"], input[type="number"], input[type="password"] {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
   width: 100%;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  font-size: 16px;
 }
 
 button {
-  padding: 10px 16px;
-  background-color: var(--primary-yellow);
+  padding: 10px 20px;
+  background-color: #ffe066;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--text-light);
+  color: #333;
   font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-body.dark-mode button {
-  color: #1a1a1a;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: var(--hover-yellow);
+  background-color: #fab005;
 }
 
-.log-entry {
-  font-size: 0.9em;
-  background: #fff3cd;
-  border-left: 4px solid var(--primary-yellow);
-  padding: 8px;
-  margin: 4px 0;
-  border-radius: 4px;
-}
-
-.login-wrapper {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--bg-light);
-  transition: background 0.3s ease;
-}
-
-body.dark-mode .login-wrapper {
-  background: var(--bg-dark);
-}
-
-.login-box {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-body.dark-mode .login-box {
-  background: #2c2c2c;
-  color: var(--text-dark);
-}
-
-.login-box h2 {
-  margin-bottom: 20px;
-}
-
-.login-box input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  width: 250px;
-}
-
-.login-box button {
-  width: 100%;
-  padding: 10px;
-  background-color: var(--primary-yellow);
-  border: none;
-  color: #333;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
-#stats {
-  margin-top: 20px;
-  font-weight: bold;
-  background: #fcf3cf;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.toggle-theme {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: 2px solid var(--primary-yellow);
-  padding: 8px 12px;
+#stats, #logs {
+  margin-top: 30px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  cursor: pointer;
-  font-weight: bold;
-  color: var(--text-light);
-  transition: all 0.3s ease;
 }
 
-body.dark-mode .toggle-theme {
-  color: var(--text-dark);
-  border-color: var(--hover-yellow);
+ul#log-list {
+  list-style: none;
+  padding-left: 0;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
-@media screen and (max-width: 600px) {
-  .container {
-    padding: 15px;
-  }
-
-  .login-box input {
-    width: 100%;
-  }
-
-  #staff-table th, #staff-table td {
-    font-size: 12px;
-    padding: 6px;
-  }
+#log-list li {
+  padding: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  font-size: 14px;
 }
 
-/* End of style */
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
