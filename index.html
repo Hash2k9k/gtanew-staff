@@ -2,44 +2,42 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Staff GTA - Interface Avancée</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestion du Staff GTA</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Gestion du Staff - GTA RP</h1>
-    </header>
+    <h1>Gestion du Staff GTA</h1>
 
     <div class="controls">
-      <input type="text" id="search-input" placeholder="Rechercher un membre..." />
-      <button id="sort-btn">Trier par tickets 🔽</button>
+      <input type="text" id="search" placeholder="Rechercher un membre...">
+      <button onclick="sortStaff()">Trier par tickets</button>
     </div>
 
-    <section>
-      <table id="staff-table">
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Tickets</th>
-            <th>Progression</th>
-            <th>Modifier</th>
-          </tr>
-        </thead>
-        <tbody id="staff-list"></tbody>
-      </table>
-      <p id="total-tickets">Total des tickets : 0</p>
-    </section>
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Tickets traités</th>
+          <th>Modifier</th>
+        </tr>
+      </thead>
+      <tbody id="staff-list"></tbody>
+    </table>
 
-    <section class="form-section">
+    <form id="add-staff-form">
       <h2>Ajouter un membre</h2>
-      <form id="add-staff-form">
-        <input type="text" id="staff-name" placeholder="Nom" required />
-        <input type="number" id="staff-tickets" placeholder="Tickets" min="0" value="0" required />
-        <button type="submit">Ajouter</button>
-      </form>
-    </section>
+      <input type="text" id="staff-name" placeholder="Nom du membre" required />
+      <input type="number" id="staff-tickets" placeholder="Tickets traités" value="0" required />
+      <button type="submit">Ajouter</button>
+    </form>
+
+    <div id="stats"></div>
+    <div id="logs">
+      <h3>Historique</h3>
+      <ul id="log-list"></ul>
+    </div>
   </div>
 
   <script src="script.js"></script>
