@@ -1,4 +1,4 @@
-const adminCode = "gta123";
+const adminCode = "gtanewtop!";
 
 function isAuthorized() {
   return prompt("Mot de passe administrateur ?") === adminCode;
