@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion du Staff GTA</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff GTA - Interface Avancée</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Gestion du Staff - Serveur GTA</h1>
-        </header>
+  <div class="container">
+    <header>
+      <h1>Gestion du Staff - GTA RP</h1>
+    </header>
 
-        <section>
-            <h2>Membres du Staff</h2>
-            <table id="staff-table">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Tickets traités</th>
-                        <th>Modifier</th>
-                    </tr>
-                </thead>
-                <tbody id="staff-list">
-                    <!-- Les membres du staff seront insérés ici via JavaScript -->
-                </tbody>
-            </table>
-        </section>
-
-        <section>
-            <h2>Ajouter un membre du Staff</h2>
-            <form id="add-staff-form">
-                <input type="text" id="staff-name" placeholder="Nom du membre" required />
-                <input type="number" id="staff-tickets" placeholder="Tickets traités" value="0" required />
-                <button type="submit">Ajouter</button>
-            </form>
-        </section>
+    <div class="controls">
+      <input type="text" id="search-input" placeholder="Rechercher un membre..." />
+      <button id="sort-btn">Trier par tickets 🔽</button>
     </div>
 
-    <script src="script.js"></script>
+    <section>
+      <table id="staff-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Tickets</th>
+            <th>Progression</th>
+            <th>Modifier</th>
+          </tr>
+        </thead>
+        <tbody id="staff-list"></tbody>
+      </table>
+      <p id="total-tickets">Total des tickets : 0</p>
+    </section>
+
+    <section class="form-section">
+      <h2>Ajouter un membre</h2>
+      <form id="add-staff-form">
+        <input type="text" id="staff-name" placeholder="Nom" required />
+        <input type="number" id="staff-tickets" placeholder="Tickets" min="0" value="0" required />
+        <button type="submit">Ajouter</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
