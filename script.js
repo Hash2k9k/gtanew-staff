@@ -129,7 +129,7 @@ function updateStats() {
   document.getElementById('stats').innerHTML = `
     <h3>Statistiques</h3>
     <p>Total de tickets traités : <strong>${total}</strong></p>
-    <p>Top performer : <strong>${top.name}</strong> (${top.tickets} tickets)</p>
+    <p>Meilleur staff : <strong>${top.name}</strong> (${top.tickets} tickets)</p>
   `;
 
   updateLogs();
