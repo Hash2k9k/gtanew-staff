@@ -9,6 +9,17 @@ if (staffData.some(member => member.name.toLowerCase() === newStaff.name.toLower
     return;
 }
 
+function deleteStaff(button) {
+    const index = button.getAttribute('data-index');
+    const staffData = JSON.parse(localStorage.getItem('staff')) || [];
+
+    if (confirm(`Supprimer ${staffData[index].name} ?`)) {
+        staffData.splice(index, 1);
+        localStorage.setItem('staff', JSON.stringify(staffData));
+        loadStaffData();
+    }
+}
+
   if (sortDescending) {
     staffData.sort((a, b) => b.tickets - a.tickets);
   } else {
