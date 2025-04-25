@@ -1,14 +1,30 @@
 /* style.css */
 
+:root {
+  --bg-light: linear-gradient(120deg, #f9e79f, #f7dc6f);
+  --bg-dark: #1a1a1a;
+  --text-light: #333;
+  --text-dark: #f9f9f9;
+  --primary-yellow: #f4d03f;
+  --hover-yellow: #f7dc6f;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(120deg, #f9e79f, #f7dc6f);
+  background: var(--bg-light);
+  color: var(--text-light);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode {
+  background: var(--bg-dark);
+  color: var(--text-dark);
 }
 
 .container {
@@ -22,6 +38,10 @@ body {
   animation: fadeIn 0.5s ease-in;
 }
 
+body.dark-mode .container {
+  background: #2c2c2c;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -29,7 +49,6 @@ body {
 
 h1, h2 {
   text-align: center;
-  color: #333;
 }
 
 #staff-table {
@@ -46,8 +65,7 @@ h1, h2 {
 }
 
 #staff-table th {
-  background-color: #f4d03f;
-  color: #333;
+  background-color: var(--primary-yellow);
 }
 
 input[type="text"],
@@ -62,23 +80,27 @@ select {
 
 button {
   padding: 10px 16px;
-  background-color: #f4d03f;
+  background-color: var(--primary-yellow);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  color: #333;
+  color: var(--text-light);
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
 
+body.dark-mode button {
+  color: #1a1a1a;
+}
+
 button:hover {
-  background-color: #f7dc6f;
+  background-color: var(--hover-yellow);
 }
 
 .log-entry {
   font-size: 0.9em;
   background: #fff3cd;
-  border-left: 4px solid #f4d03f;
+  border-left: 4px solid var(--primary-yellow);
   padding: 8px;
   margin: 4px 0;
   border-radius: 4px;
@@ -102,9 +124,13 @@ button:hover {
   align-items: center;
 }
 
+body.dark-mode .login-box {
+  background: #2c2c2c;
+  color: var(--text-dark);
+}
+
 .login-box h2 {
   margin-bottom: 20px;
-  color: #333;
 }
 
 .login-box input {
@@ -118,7 +144,7 @@ button:hover {
 .login-box button {
   width: 100%;
   padding: 10px;
-  background-color: #f4d03f;
+  background-color: var(--primary-yellow);
   border: none;
   color: #333;
   border-radius: 8px;
@@ -131,6 +157,25 @@ button:hover {
   background: #fcf3cf;
   padding: 10px;
   border-radius: 8px;
+}
+
+.toggle-theme {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: 2px solid var(--primary-yellow);
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .toggle-theme {
+  color: var(--text-dark);
+  border-color: var(--hover-yellow);
 }
 
 @media screen and (max-width: 600px) {
