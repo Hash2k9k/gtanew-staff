@@ -1,84 +1,103 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestion du Staff GTA</title>
-
-  <script>
-    // Vérifie si l'utilisateur est déjà authentifié
-    if (sessionStorage.getItem("authenticated") !== "true") {
-      document.write(`
-        <style>
-          body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-          #login-screen { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-          input { padding: 10px; width: 100%; margin-bottom: 10px; }
-          button { padding: 10px; width: 100%; background: #4CAF50; color: white; border: none; cursor: pointer; }
-          button:hover { background: #45a049; }
-        </style>
-        <div id="login-screen">
-          <h2>Connexion requise</h2>
-          <input type="password" id="login-password" placeholder="Mot de passe" />
-          <button onclick="verifyPassword()">Se connecter</button>
-          <p id="login-error" style="color: red;"></p>
-        </div>
-        <script>
-          function verifyPassword() {
-            const input = document.getElementById("login-password").value;
-            if (input === "gta123") {
-              sessionStorage.setItem("authenticated", "true");
-              location.reload();
-            } else {
-              document.getElementById("login-error").textContent = "Mot de passe incorrect.";
-            }
-          }
-        <\/script>
-      `);
-    }
-  </script>
-
-  <!-- CSS chargé uniquement après auth -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion Staff GTA - Accès sécurisé</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    #main-content { display: none; }
+    #login-screen {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 300px;
+      margin: 100px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #login-screen input, #login-screen button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #login-error {
+      color: red;
+      text-align: center;
+    }
+  </style>
 </head>
-<body style="display: none">
-  <div class="container">
-    <h1>Gestion du Staff GTA</h1>
+<body>
+  <!-- Login -->
+  <div id="login-screen">
+    <h2>Connexion</h2>
+    <input type="password" id="login-password" placeholder="Mot de passe">
+    <button onclick="verifyPassword()">Se connecter</button>
+    <p id="login-error"></p>
+  </div>
 
-    <div class="controls">
-      <input type="text" id="search" placeholder="Rechercher un membre...">
-      <button onclick="sortStaff()">Trier par tickets</button>
-    </div>
+  <!-- Contenu principal (masqué par défaut) -->
+  <div id="main-content">
+    <div class="container">
+      <h1>Gestion du Staff GTA</h1>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Tickets traités</th>
-          <th>Modifier</th>
-        </tr>
-      </thead>
-      <tbody id="staff-list"></tbody>
-    </table>
+      <div class="controls">
+        <input type="text" id="search" placeholder="Rechercher un membre...">
+        <button onclick="sortStaff()">Trier par tickets</button>
+      </div>
 
-    <form id="add-staff-form">
-      <h2>Ajouter un membre</h2>
-      <input type="text" id="staff-name" placeholder="Nom du membre" required />
-      <input type="number" id="staff-tickets" placeholder="Tickets traités" value="0" required />
-      <button type="submit">Ajouter</button>
-    </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Tickets traités</th>
+            <th>Modifier</th>
+          </tr>
+        </thead>
+        <tbody id="staff-list"></tbody>
+      </table>
 
-    <div id="stats"></div>
-    <div id="logs">
-      <h3>Historique</h3>
-      <ul id="log-list"></ul>
+      <form id="add-staff-form">
+        <h2>Ajouter un membre</h2>
+        <input type="text" id="staff-name" placeholder="Nom du membre" required />
+        <input type="number" id="staff-tickets" placeholder="Tickets traités" value="0" required />
+        <button type="submit">Ajouter</button>
+      </form>
+
+      <div id="stats"></div>
+      <div id="logs">
+        <h3>Historique</h3>
+        <ul id="log-list"></ul>
+      </div>
     </div>
   </div>
 
   <script>
+    function verifyPassword() {
+      const input = document.getElementById("login-password").value;
+      const error = document.getElementById("login-error");
+
+      if (input === "gta123") {
+        sessionStorage.setItem("authenticated", "true");
+        showMainContent();
+      } else {
+        error.textContent = "Mot de passe incorrect.";
+      }
+    }
+
+    function showMainContent() {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("main-content").style.display = "block";
+      const script = document.createElement('script');
+      script.src = 'script.js';
+      document.body.appendChild(script);
+    }
+
+    // Si déjà connecté, affiche directement le contenu
     if (sessionStorage.getItem("authenticated") === "true") {
-      document.body.style.display = "block";
+      window.addEventListener("DOMContentLoaded", showMainContent);
     }
   </script>
-  <script src="script.js"></script>
 </body>
 </html>
