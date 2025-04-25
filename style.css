@@ -1,108 +1,75 @@
 body {
-  font-family: "Segoe UI", sans-serif;
-  background-color: #f2f2f2;
-  margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
 }
 
 .container {
   max-width: 900px;
-  margin: 30px auto;
+  margin: auto;
+  background: #fff;
   padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-header h1 {
+h1, h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #222;
-}
-
-.controls {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  gap: 10px;
-}
-
-.controls input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.controls button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.controls button:hover {
-  background-color: #0056b3;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
+  margin-top: 20px;
 }
 
-table th, table td {
-  border: 1px solid #ddd;
+th, td {
   padding: 10px;
+  border: 1px solid #ccc;
   text-align: center;
 }
 
-table th {
-  background-color: #343a40;
+th {
+  background-color: #4CAF50;
   color: white;
 }
 
+.controls {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.controls input,
+.controls button {
+  padding: 10px;
+  font-size: 14px;
+}
+
 .progress-bar {
-  height: 12px;
-  width: 100%;
-  background-color: #e0e0e0;
-  border-radius: 6px;
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
   overflow: hidden;
+  margin-top: 5px;
 }
 
 .progress {
   height: 100%;
-  background-color: #28a745;
+  background: #4CAF50;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
+#stats, #logs {
+  margin-top: 30px;
+  padding: 15px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-form input, form button {
-  padding: 10px;
-  font-size: 16px;
-}
-
-form button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-form button:hover {
-  background-color: #218838;
-}
-
-#total-tickets {
-  font-weight: bold;
-  text-align: right;
-  margin-top: 10px;
+#logs ul {
+  max-height: 150px;
+  overflow-y: auto;
 }
