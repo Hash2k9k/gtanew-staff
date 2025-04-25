@@ -1,7 +1,23 @@
-const adminCode = "gtanewtop!";
+const adminCode = "gta123"; // <-- change ce mot de passe ici
 
-function isAuthorized() {
-  return prompt("Mot de passe administrateur ?") === adminCode;
+// Vérifie s'il est déjà connecté
+if (sessionStorage.getItem("authenticated") === "true") {
+  document.getElementById("main-content").style.display = "block";
+} else {
+  document.getElementById("login-screen").style.display = "block";
+}
+
+// Fonction de connexion
+function verifyPassword() {
+  const input = document.getElementById("login-password").value;
+  if (input === adminCode) {
+    sessionStorage.setItem("authenticated", "true");
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("main-content").style.display = "block";
+    loadStaffData();
+  } else {
+    document.getElementById("login-error").textContent = "Mot de passe incorrect.";
+  }
 }
 
 function loadStaffData() {
