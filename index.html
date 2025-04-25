@@ -4,9 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gestion du Staff GTA</title>
+
+  <script>
+    // Vérifie si l'utilisateur est déjà authentifié
+    if (sessionStorage.getItem("authenticated") !== "true") {
+      document.write(`
+        <style>
+          body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+          #login-screen { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+          input { padding: 10px; width: 100%; margin-bottom: 10px; }
+          button { padding: 10px; width: 100%; background: #4CAF50; color: white; border: none; cursor: pointer; }
+          button:hover { background: #45a049; }
+        </style>
+        <div id="login-screen">
+          <h2>Connexion requise</h2>
+          <input type="password" id="login-password" placeholder="Mot de passe" />
+          <button onclick="verifyPassword()">Se connecter</button>
+          <p id="login-error" style="color: red;"></p>
+        </div>
+        <script>
+          function verifyPassword() {
+            const input = document.getElementById("login-password").value;
+            if (input === "gta123") {
+              sessionStorage.setItem("authenticated", "true");
+              location.reload();
+            } else {
+              document.getElementById("login-error").textContent = "Mot de passe incorrect.";
+            }
+          }
+        <\/script>
+      `);
+    }
+  </script>
+
+  <!-- CSS chargé uniquement après auth -->
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body style="display: none">
   <div class="container">
     <h1>Gestion du Staff GTA</h1>
 
@@ -33,23 +67,6 @@
       <button type="submit">Ajouter</button>
     </form>
 
-<body>
-  <!-- Écran de connexion -->
-  <div id="login-screen" class="container" style="display: none;">
-    <h2>Connexion requise</h2>
-    <input type="password" id="login-password" placeholder="Mot de passe" />
-    <button onclick="verifyPassword()">Se connecter</button>
-    <p id="login-error" style="color: red;"></p>
-  </div>
-
-  <!-- Contenu principal du site -->
-  <div id="main-content" style="display: none;">
-    <!-- ... LE CONTENU EXISTANT ICI (déjà dans ton HTML) ... -->
-  </div>
-
-  <script src="script.js"></script>
-</body>
-
     <div id="stats"></div>
     <div id="logs">
       <h3>Historique</h3>
@@ -57,6 +74,11 @@
     </div>
   </div>
 
+  <script>
+    if (sessionStorage.getItem("authenticated") === "true") {
+      document.body.style.display = "block";
+    }
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
