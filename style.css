@@ -1,20 +1,23 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  padding: 20px;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('https://images.unsplash.com/photo-1606788075761-6e4d92b21862?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
 }
 
 .container {
   max-width: 900px;
-  margin: auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
 }
 
-h1, h2 {
+h1, h2, h3 {
   text-align: center;
+  color: #ffe066;
 }
 
 table {
@@ -23,53 +26,65 @@ table {
   margin-top: 20px;
 }
 
-th, td {
-  padding: 10px;
-  border: 1px solid #ccc;
+table th, table td {
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   text-align: center;
 }
 
-th {
-  background-color: #4CAF50;
-  color: white;
+table th {
+  background-color: #ffd43b;
+  color: #333;
 }
 
-.controls {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-  gap: 10px;
-}
-
-.controls input,
-.controls button {
+input[type="text"], input[type="number"], input[type="password"] {
   padding: 10px;
-  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 16px;
 }
 
-.progress-bar {
-  height: 10px;
-  background: #eee;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-top: 5px;
+button {
+  padding: 10px 20px;
+  background-color: #ffe066;
+  border: none;
+  color: #333;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.progress {
-  height: 100%;
-  background: #4CAF50;
+button:hover {
+  background-color: #fab005;
 }
 
 #stats, #logs {
   margin-top: 30px;
   padding: 15px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
 }
 
-#logs ul {
-  max-height: 150px;
+ul#log-list {
+  list-style: none;
+  padding-left: 0;
+  max-height: 200px;
   overflow-y: auto;
+}
+
+#log-list li {
+  padding: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  font-size: 14px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
 }
